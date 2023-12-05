@@ -50,7 +50,15 @@ document
     resetDebug(dbgRegister);
 
     // Get options
-    const resp = await fetch("/generate-registration-options");
+    const resp = await fetch("/generate-registration-options?username="+document.getElementById("username").value);
+    if (resp.status !== 200) {
+        printToDebug(
+          dbgRegister,
+          "User already exists",
+          "");
+        return;
+    }
+
     const opts = await resp.json();
     printToDebug(
       dbgRegister,
@@ -109,7 +117,14 @@ document
     resetDebug(dbgAuthenticate);
 
     // Get options
-    const resp = await fetch("/generate-authentication-options");
+    const resp = await fetch("/generate-authentication-options?username="+document.getElementById("username").value);
+    if (resp.status !== 200) {
+        printToDebug(
+	  dbgAuthenticate,
+	  "User not found",
+	  "");
+	return;
+    }
     const opts = await resp.json();
     printToDebug(
       dbgAuthenticate,
@@ -149,7 +164,7 @@ document
     if (verified) {
       printToStatus(statusAuthenticate, getPassStatus());
     } else {
-      printToStatus(statusAuthenticate, getFailureStatus(err));
+      printToStatus(statusAuthenticate, getFailureStatus(msg));
     }
     printToDebug(
       dbgAuthenticate,
